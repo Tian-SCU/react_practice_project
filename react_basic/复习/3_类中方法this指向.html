@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script type="text/javascript">
+    class Person{
+      constructor(name,age){
+        this.name = name
+        this.age = age
+      }
+      study(){
+        //study放在Person原型对象上的
+        //通过Person实例调用study的时候，study的this就是Person实例
+
+        //类中的方法，局部默认开了严格模式,'use strict'，所以是undefined
+        console.log(this)
+      }
+    }
+    const p1 = new Person('tom',18)
+    p1.study()  //通过实例调用speak方法的
+
+    const x = p1.study //调用函数
+    x()  //类中的方法，局部默认开了严格模式，undefined
+  </script>
+  
+</body>
+</html>

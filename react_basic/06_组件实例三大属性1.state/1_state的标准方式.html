@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>1_state标准方式</title>
+</head>
+
+<body>
+  <!-- 准备好一个容器 -->
+  <div id="test"></div>
+
+  <!-- 1.引入react核心库 -->
+  <!-- 2.引入react-dom库，用于支持react操作DOM -->
+  <!-- 3.引入babel用于将jsx转化为js -->
+  <script type="text/javascript" src="../js/react.development.js"></script>
+  <script type="text/javascript" src="../js/react-dom.development.js"></script>
+  <script type="text/javascript" src="../js/babel.min.js"></script>
+
+  <script type="text/babel">
+    // 1.创建组件(必须是class类组件)
+    class Weather extends React.Component {
+      //构造器调用了几次?-------- 1️次
+      constructor(props){
+        console.log('constructor')
+        super(props)
+        //初始化状态,state属性为null或者object{}对象
+        this.state = {isHot: false, wind:'微风'};
+        // 解决changeWeather中this指向问题
+        this.changeWeather = this.changeWeather.bind(this)
+      }
+      
+      //render调用了几次?-------- 1️+n次 1是初始化的那次,n是状态更新的次数，每次重新render
+      render(){
+        console.log('render') //this指向类的实例对象
+        const {isHot,wind} = this.state
+        return <h1 onClick={this.changeWeather}>今天天气很{isHot ? '炎热' : '凉爽'},{wind}</h1>
+      }
+
+      //changeWeather调用了几次?-------- 点几次调用几次
+      changeWeather(){
+        //changeWeather----放在了Weather的原型对象上了，供实例对象使用
+        //通过Weaher实例调用changeWeather时，changeWeather中的this就是Weather实例
+        //由于changeWeaher是作为onClick的回调，所以不是通过实例调用的，是直接调用的
+        //类里面方法默认开启了局部'use strict',所以changeWeaher中的this为'undefined'
+        
+        // 获取原来的isHot值,但是React对于(state)的值无法直接更改,根本无法视图更新,需要借助内置API:setState,去更改
+        const isHot = this.state.isHot;
+        // this.state.isHot = !isHot  XXXXXXXXXXXXXX错误❌写法
+        // console.log(this)
+        // 状态必须通过✅,setState进行更新,且更新是一种合并,不是直接替换
+        this.setState({isHot:!isHot})
+      }
+    }
+
+    // 2.渲染组件到页面
+    ReactDOM.render(<Weather/>,document.getElementById('test'))
+
+    /* const w = new Weather()
+    w.changeWeather() */
+
+  </script> 
+</body>
+
+</html>
